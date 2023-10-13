@@ -1,31 +1,37 @@
-name: Sysdig Image Scanner
+   name: Sysdig Scan
 
-on:
-  push:
-    branches:
-      - main
+   on:
+     push:
+       branches: [ main ]
+     pull_request:
+       branches: [ main ]
 
-jobs:
-  sysdig_scan:
-    runs-on: ubuntu-latest
+   jobs:
+     sysdig_scan:
+       runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
+       steps:
+       - name: Checkout code
+         uses: actions/checkout@v2
+         
+       - name: Set up Docker Buildx
+         uses: docker/setup-buildx-action@v1
+         
+       - name: Sysdig Scan
+         run: |
+           docker pull dockersamples/example-voting-app:latest
+           docker save dockersamples/example-voting-app:latest | sysdig --docker-timeout 300 scan --force
 
-    - name: Install Sysdig CLI Scanner
-      run: |
-        # Install the Sysdig CLI scanner
-        curl -s https://s3.amazonaws.com/sysdig-cli-install/sdc-latest | bash
-      env:
-        SDCLATEST: "true"
+       - name: Save Sysdig Scan Results
+         run: |
+           docker pull dockersamples/example-voting-app:latest
+           docker save dockersamples/example-voting-app:latest | sysdig --docker-timeout 300 scan --force -o sysdig_scan_results.json
 
-    - name: Scan Docker Image
-      run: |
-        # Run the Sysdig CLI scanner on your Docker image
-        sysdig-cli images scan <your-image-name>:<tag>
-      env:
-        SD_TOKEN: 6a292fb3-981c-4b45-98df-b54365b6ae34 # Sysdig Secure API token
+       - name: Upload Sysdig Scan Results
+         uses: actions/upload-artifact@v2
+         with:
+           name: sysdig-scan-results
+           path: sysdig_scan_results.json
 
-# You'll need to configure your Sysdig API token as a GitHub secret.
+
 
