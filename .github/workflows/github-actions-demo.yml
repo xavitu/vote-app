@@ -18,4 +18,4 @@ jobs:
       uses: sysdiglabs/scan-action@v3.5.0
       with:
         image-tag: "dockersamples/example-voting-app:latest"
-        sysdig-secure-token: 6a292fb3-981c-4b45-98df-b54365b6ae34
+        sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
