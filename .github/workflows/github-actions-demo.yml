@@ -23,7 +23,7 @@ jobs:
     - name: Scan Docker Image
       run: |
         # Run the Sysdig CLI scanner on your Docker image
-        sysdig-cli images scan <your-image-name>:<tag>
+        sysdig-cli images scan example-voting-app-main/example-voting-app-main
       env:
         SD_TOKEN: ${{ secrets.SYSDIG_SECURE_TOKEN  }} # Sysdig Secure API token
 
