@@ -1,21 +1,31 @@
-name: Sysdig Scan
+name: Sysdig Image Scanner
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   sysdig_scan:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout Code
       uses: actions/checkout@v2
 
-    - name: Sysdig Secure Inline Scan
-      uses: sysdiglabs/scan-action@v3.5.0
-      with:
-        image-tag: "dockersamples/example-voting-app:latest"
-        sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
+    - name: Install Sysdig CLI Scanner
+      run: |
+        # Install the Sysdig CLI scanner
+        curl -s https://s3.amazonaws.com/sysdig-cli-install/sdc-latest | bash
+      env:
+        SDCLATEST: "true"
+
+    - name: Scan Docker Image
+      run: |
+        # Run the Sysdig CLI scanner on your Docker image
+        sysdig-cli images scan <your-image-name>:<tag>
+      env:
+        SD_TOKEN: ${{ secrets.SYSDIG_SECURE_TOKEN  }} # Sysdig Secure API token
+
+# You'll need to configure your Sysdig API token as a GitHub secret.
+
