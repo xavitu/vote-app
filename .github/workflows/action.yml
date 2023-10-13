@@ -21,11 +21,11 @@ jobs:
       with:
         context: .
         push: true
-        tags: xavitu94/voteapp:tagname:latest
+        tags: xavitu94/voteapp:latest
 
     - name: Scan the image using sysdig-cli-scanner
       env:
         SECURE_API_TOKEN: ${{ secrets.SECURE_API_TOKEN }}
       run: |
-        docker pull xavitu94/voteapp:tagname:latest
-        docker save xavitu94/voteapp:tagname:latest | docker run --rm -i -v /var/run/docker.sock:/var/run/docker.sock quay.io/sysdig/secure-inline-scan:2 --sysdig-url https://secure.sysdig.com --sysdig-token ${{ secrets.SECURE_API_TOKEN }} --storage-type docker-daemon --storage-path /var/run/docker.sock -
+        docker pull xavitu94/voteapp:latest
+        docker save xavitu94/voteapp:latest | docker run --rm -i -v /var/run/docker.sock:/var/run/docker.sock quay.io/sysdig/secure-inline-scan:2 --sysdig-url https://secure.sysdig.com --sysdig-token ${{ secrets.SECURE_API_TOKEN }} --storage-type docker-daemon --storage-path /var/run/docker.sock -
