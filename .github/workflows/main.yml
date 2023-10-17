@@ -1,10 +1,3 @@
-env:
-    SYSDIG_SECURE_ENDPOINT: "https://eu1.app.sysdig.com"
-    REGISTRY_HOST: "xavitu94"
-    IMAGE_NAME: "voteapp"
-    IMAGE_TAG: "latest"
-    DOCKERFILE_CONTEXT: "github/new-scan-engine"
-  
 name: Container build, scan and push
 
 on: [push, pull_request]
@@ -51,7 +44,7 @@ jobs:
       run: |
           ${GITHUB_WORKSPACE}/cache/sysdig-cli-scanner \
             --apiurl ${SYSDIG_SECURE_ENDPOINT} \
-            docker://xavitu94/voteapp:latest \
+            docker://${REGISTRY_HOST}/${{ secrets.REGISTRY_USER }}/${IMAGE_NAME}:${IMAGE_TAG} \
             --console-log \
             --dbpath=${GITHUB_WORKSPACE}/cache/db/ \
             --cachepath=${GITHUB_WORKSPACE}/cache/scanner-cache/
