@@ -51,7 +51,7 @@ jobs:
       run: |
           ${GITHUB_WORKSPACE}/cache/sysdig-cli-scanner \
             --apiurl ${SYSDIG_SECURE_ENDPOINT} \
-            docker://${REGISTRY_HOST}/xavitu94/voteapp:latest \
+            docker://xavitu94/voteapp:latest \
             --console-log \
             --dbpath=${GITHUB_WORKSPACE}/cache/db/ \
             --cachepath=${GITHUB_WORKSPACE}/cache/scanner-cache/
