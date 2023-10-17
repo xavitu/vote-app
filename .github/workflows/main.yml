@@ -1,8 +1,10 @@
-SYSDIG_SECURE_ENDPOINT: "https://eu1.app.sysdig.com"
-REGISTRY_HOST: "xavitu94"
-IMAGE_NAME: "mvoteapp"
-IMAGE_TAG: "latest"
-DOCKERFILE_CONTEXT: "github/new-scan-engine/"
+
+env:
+    SYSDIG_SECURE_ENDPOINT: "https://eu1.app.sysdig.com"
+    REGISTRY_HOST: "xavitu94"
+    IMAGE_NAME: "mvoteapp"
+    IMAGE_TAG: "latest"
+    DOCKERFILE_CONTEXT: "github/new-scan-engine/"
 
 name: Container build, scan and push
 
