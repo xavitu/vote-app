@@ -4,7 +4,7 @@ env:
     REGISTRY_HOST: "docker.io"
     IMAGE_NAME: "voteapp"
     IMAGE_TAG: "latest"
-    DOCKERFILE_CONTEXT: "example-voting-app-main/example-voting-app-main/worker"
+    DOCKERFILE_CONTEXT: "example-voting-app-main/example-voting-app-main/vote"
 
 name: Container build, scan and push
 
