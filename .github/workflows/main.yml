@@ -34,39 +34,14 @@ jobs:
         key: ${{ runner.os }}-cache-${{ hashFiles('**/sysdig-cli-scanner', '**/latest_version.txt', '**/db/main.db.meta.json', '**/scanner-cache/inlineScannerCache.db') }}
         restore-keys: ${{ runner.os }}-cache-
 
-    - name: Download sysdig-cli-scanner if needed
-      run:  |
-        curl -sLO https://download.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt
-        mkdir -p ${GITHUB_WORKSPACE}/cache/db/
-        if [ ! -f ${GITHUB_WORKSPACE}/cache/latest_version.txt ] || [ $(cat ./latest_version.txt) != $(cat ${GITHUB_WORKSPACE}/cache/latest_version.txt) ]; then
-          cp ./latest_version.txt ${GITHUB_WORKSPACE}/cache/latest_version.txt
-          curl -sL -o ${GITHUB_WORKSPACE}/cache/sysdig-cli-scanner "https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/$(cat ${GITHUB_WORKSPACE}/cache/latest_version.txt)/linux/amd64/sysdig-cli-scanner"
-          chmod +x ${GITHUB_WORKSPACE}/cache/sysdig-cli-scanner
-        else
-          echo "sysdig-cli-scanner latest version already downloaded"
-        fi
-
-    - name: Scan the image using sysdig-cli-scanner
-      env:
-        SECURE_API_TOKEN: ${{ secrets.SECURE_API_TOKEN }}
-      run: |
-          ${GITHUB_WORKSPACE}/cache/sysdig-cli-scanner \
-            --apiurl ${SYSDIG_SECURE_ENDPOINT} \
-            docker://${REGISTRY_HOST}/${{ secrets.REGISTRY_USER }}/${IMAGE_NAME}:${IMAGE_TAG} \
-            --console-log \
-            --dbpath=${GITHUB_WORKSPACE}/cache/db/ \
-            --cachepath=${GITHUB_WORKSPACE}/cache/scanner-cache/
-
-    -  name: Login to the registry
-       uses: docker/login-action@v2
-       with:
-        registry: ${{ env.REGISTRY_HOST }}
-        username: ${{ secrets.REGISTRY_USER }}
-        password: ${{ secrets.REGISTRY_PASSWORD }}
-
-    - name: Push
-      uses: docker/build-push-action@v3
+    - name: Scan image
+      id: scan
+      uses: sysdiglabs/scan-action@v5
       with:
-        context: ${{ env.DOCKERFILE_CONTEXT }}
-        push: true
-        tags: ${{ env.REGISTRY_HOST }}/${{ secrets.REGISTRY_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          image-tag: sysdiglabs/dummy-vuln-app:latest
+          sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
+    - name: Upload SARIF file
+      if: success() || failure() 
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ github.workspace }}/sarif.json
