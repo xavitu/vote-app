@@ -19,14 +19,7 @@ jobs:
     
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
-    
-    - name: Build and save
-      uses: docker/build-push-action@v3
-      with:
-        context: ${{ env.DOCKERFILE_CONTEXT }}
-        tags: ${{ env.REGISTRY_HOST }}/${{ secrets.REGISTRY_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-        load: true
-    
+       
     - name: Setup cache
       uses: actions/cache@v3
       with:
@@ -39,5 +32,5 @@ jobs:
       uses: sysdiglabs/scan-action@v5
       with:
           sysdig-secure-url: https://eu1.app.sysdig.com
-          image-tag: ${{ secrets.REGISTRY_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          image-tag: xavitu94/voteapp:latest
           sysdig-secure-token: ${{ secrets.SECURE_API_TOKEN }}
