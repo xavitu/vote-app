@@ -33,5 +33,5 @@ jobs:
       with:
           sysdig-secure-url: https://eu1.app.sysdig.com
           image-tag: docker.io/xavitu94/voteapp:latest
-          extra-parameters: loglevel=info
+          extra-parameters: --loglevel=info
           sysdig-secure-token: ${{ secrets.SECURE_API_TOKEN }}
