@@ -32,5 +32,5 @@ jobs:
       uses: sysdiglabs/scan-action@v5
       with:
           sysdig-secure-url: https://eu1.app.sysdig.com
-          image-tag: xavitu94/voteapp:latest
+          image-tag: docker.io/xavitu94/voteapp:latest
           sysdig-secure-token: ${{ secrets.SECURE_API_TOKEN }}
