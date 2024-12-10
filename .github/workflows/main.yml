@@ -3,20 +3,59 @@ name: Container build, scan and push
 on: [push, pull_request]
 
 jobs:
-  build-scan-and-push:
+  build-and-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      packages: write
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-       
-    - name: Scan image
-      id: scan
-      uses: sysdiglabs/scan-action@v5
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Build container image
+      run: |
+        docker build -t test-image:${{ github.sha }} .
+      
+    - name: Start Falco
+      uses: falcosecurity/falco-actions/start@<commit-sha>
       with:
-          sysdig-secure-url: https://eu1.app.sysdig.com
-          image-tag: sysdiglabs/dummy-vuln-app:latest
-          sysdig-secure-token: ${{ secrets.SECURE_API_TOKEN }}
-          skip-summary: true
+        mode: live
+        falco-version: '0.39.0'
+        verbose: true
+
+    - name: Run container and generate events
+      run: |
+        docker run --rm -d --name test-container test-image:${{ github.sha }}
+        # Add commands here to generate events that Falco should detect
+        # For example:
+        docker exec test-container cat /etc/shadow
+        docker exec test-container nc -l 1234
+        sleep 10  # Give Falco time to detect and log events
+        docker stop test-container
+
+    - name: Stop Falco
+      uses: falcosecurity/falco-actions/stop@<commit-sha>
+      with:
+        mode: live
+        verbose: true
+
+    - name: Analyze Falco output
+      run: |
+        if grep -q "Sensitive file opened for reading by non-trusted program" /tmp/falco.log; then
+          echo "Falco detected sensitive file access"
+          exit 1
+        fi
+        if grep -q "Netcat listen" /tmp/falco.log; then
+          echo "Falco detected netcat listen"
+          exit 1
+        fi
+        echo "No security issues detected by Falco"
+
+    - name: Push image if tests pass
+      if: success()
+      run: |
+        echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        docker tag test-image:${{ github.sha }} ghcr.io/${{ github.repository }}/test-image:${{ github.sha }}
+        docker push ghcr.io/${{ github.repository }}/test-image:${{ github.sha }}
