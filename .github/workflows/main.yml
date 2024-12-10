@@ -16,7 +16,7 @@ jobs:
 
     - name: Build container image
       run: |
-        docker build -t test-image:${{ github.sha }} .
+        docker build -t test-image:latest .
       
     - name: Start Falco
       uses: falcosecurity/falco-actions/start@0.1.0
