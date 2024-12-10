@@ -16,10 +16,10 @@ jobs:
 
     - name: Build container image
       run: |
-        docker build -t test-image:latest .
+        docker build -t test-image:${{ github.sha }} .   
       
     - name: Start Falco
-      uses: falcosecurity/falco-actions/start@0.1.0
+      uses: falcosecurity/falco-actions/start@<commit-sha>
       with:
         mode: live
         falco-version: '0.39.0'
@@ -36,7 +36,7 @@ jobs:
         docker stop test-container
 
     - name: Stop Falco
-      uses: falcosecurity/falco-actions/stop@0.1.0
+      uses: falcosecurity/falco-actions/stop@<commit-sha>
       with:
         mode: live
         verbose: true
