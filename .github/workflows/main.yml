@@ -16,9 +16,8 @@ jobs:
 
     - name: Build container image
       run: |
-          docker build -t my-image:${{ github.sha }} -f ./example-voting-app-main/example-voting-app-main/result/Dockerfile ./example-voting-app-main/example-voting-app-main
+          docker build -t my-image:${{ github.sha }} -f ./example-voting-app-main/example-voting-app-main/Dockerfile ./example-voting-app-main/example-voting-app-main
 
-      
     - name: Start Falco
       uses: falcosecurity/falco-actions/start@0.1.0
       with:
