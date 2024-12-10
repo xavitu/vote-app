@@ -16,7 +16,7 @@ jobs:
 
     - name: Build container image
       run: |
-        docker build -t test-image:${{ github.sha }} -f vote-app/example-voting-app-main/result/Dockerfile
+          docker build -t my-image:${{ github.sha }} -f ./vote-app/example-voting-app-main/result/Dockerfile ./vote-app/example-voting-app-main/result
 
       
     - name: Start Falco
