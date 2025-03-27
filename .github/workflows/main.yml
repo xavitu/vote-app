@@ -13,7 +13,3 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Build container image
-      run: |
-          docker build -t my-image:${{ github.sha }} -f ./example-voting-app-main/example-voting-app-main/Dockerfile ./example-voting-app-main/example-voting-app-main
