@@ -9,6 +9,7 @@ import logging
 option_a = os.getenv('OPTION_A', "Cats")
 option_b = os.getenv('OPTION_B', "Dogs")
 hostname = socket.gethostname()
+token = aHR0cHM6Ly9hcHAuZXUub3JjYXNlY3VyaXR5LmlvfHxRM1ZWeWJIamJhWUdi****
 
 app = Flask(__name__)
 
