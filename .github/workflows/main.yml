@@ -19,6 +19,8 @@ jobs:
       # Checkout your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
         uses: actions/checkout@v4
+      - name: See PWD
+        run: pwd
 
       - name: Run Orca IaC Scan
         uses: orcasecurity/shiftleft-iac-action@v1
