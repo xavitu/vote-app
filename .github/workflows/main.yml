@@ -20,7 +20,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
       - name: See PWD
-        run: pwd
+        run: ls
 
       - name: Run Orca IaC Scan
         uses: orcasecurity/shiftleft-iac-action@v1
