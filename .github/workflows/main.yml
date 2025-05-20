@@ -10,8 +10,8 @@ on:
   #schedule:
   #- cron: '0 0 * * *'
 jobs:
-  orca-iac_scan:
-    name: Orca IaC Scan
+  orca-full-scan:
+    name: Orca Full Scan
     runs-on: ubuntu-latest
     env:
       PROJECT_KEY: xavitu-vote-app # Set the desired project to run the cli scanning with
@@ -19,6 +19,8 @@ jobs:
       # Checkout your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
         
       - name: Run Orca IaC Scan
         uses: orcasecurity/shiftleft-iac-action@v1
@@ -27,4 +29,28 @@ jobs:
           project_key: ${{ env.PROJECT_KEY }}
           path:
             # scanning directories: ./terraform/ ./sub-dir/ and a file: ./Dockerfile
-            "./example-voting-app-main/terraform"
+            "."
+
+      - name: Run Orca SAST Scan
+        uses: orcasecurity/shiftleft-sast-action@v1
+        with:
+          api_token: ${{ secrets.ORCA_SECURITY_API_TOKEN }}
+          project_key: ${{ env.PROJECT_KEY }}
+          path:
+            # scanning the entire repository
+            "."
+
+      - name: Run Orca Secrets Scan
+        uses: orcasecurity/shiftleft-secrets-action@v1
+        with:
+          api_token: ${{ secrets.ORCA_SECURITY_API_TOKEN }}
+          project_key: ${{ env.PROJECT_KEY }}
+
+      - name: Run Orca FS Scan
+        uses: orcasecurity/shiftleft-fs-action@v1
+        with:
+          api_token: ${{ secrets.ORCA_SECURITY_API_TOKEN }}
+          project_key: ${{ env.PROJECT_KEY }}
+          path:
+            # scanning the entire repository
+            "."
