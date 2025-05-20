@@ -28,3 +28,4 @@ jobs:
           path:
             # scanning directories: ./terraform/ ./sub-dir/ and a file: ./Dockerfile
             "./example-voting-app-main/terraform"
+            # test action trigger
