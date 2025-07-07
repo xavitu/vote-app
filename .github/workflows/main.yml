@@ -14,7 +14,8 @@ jobs:
     name: Orca Full Scan
     runs-on: ubuntu-latest
     env:
-      PROJECT_KEY: xavitu-vote-app # Set the desired project to run the cli scanning with
+      # PROJECT_KEY: xavitu-vote-app # Set the desired project to run the cli scanning with
+      PROJECT_KEY: default
     steps:
       # Checkout your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
